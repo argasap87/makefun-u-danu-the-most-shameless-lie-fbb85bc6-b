@@ -9,8 +9,17 @@ const LINE = "Watched you browse incognito.";
 const chars = [...LINE].length;
 const words = LINE.trim().split(/\s+/).filter(Boolean);
 
+// Gate guards: the competition accepts exactly one line of 1–88 chars
+// and 1–5 words, UTF-8, not whitespace-only. A line that breaks any of
+// those bounds is refused instead of written, because the grader
+// rejects the whole entry on a bad file. The single-line guard also
+// rejects carriage returns, so a stray "\r" cannot smuggle in a
+// second line.
 if (LINE.trim().length === 0) {
   throw new Error("gate: entry is only whitespace");
+}
+if (LINE.includes("\n") || LINE.includes("\r")) {
+  throw new Error("gate: entry must be a single line");
 }
 if (chars < 1 || chars > 88) {
   throw new Error(`gate: char count ${chars} outside 1-88`);
